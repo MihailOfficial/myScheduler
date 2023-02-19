@@ -1,9 +1,13 @@
 import React, { Component } from "react";
+import Modal from "react-modal";
 import {
   DayPilot,
   DayPilotCalendar,
   DayPilotNavigator,
 } from "@daypilot/daypilot-lite-react";
+
+import TaskTable from "./TaskTable";
+import AddTask from "./AddTask";
 
 const styles = {
   wrap: {
@@ -20,6 +24,14 @@ const styles = {
 class Calendar extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isModalOpen: false,
+      taskName: "",
+    };
+    this.state = {
+      isModalOpen: false,
+      taskName: "",
+    };
     this.calendarRef = React.createRef();
     this.state = {
       viewType: "Week",
@@ -27,19 +39,32 @@ class Calendar extends Component {
       timeRangeSelectedHandling: "Enabled",
       onTimeRangeSelected: async (args) => {
         const dp = this.calendar;
-        const modal = await DayPilot.Modal.prompt(
-          "Create a new task:",
-          "Task 1"
-        );
+        const modal = await DayPilot.Modal.form({
+          title: "Create a new task:",
+          fields: [
+            { name: "taskName", title: "Task Name", type: "text" },
+            { name: "startTime", title: "Start Time", type: "time" },
+            { name: "endTime", title: "End Time", type: "time" },
+          ],
+          focus: "taskName",
+        });
         dp.clearSelection();
         if (!modal.result) {
           return;
         }
+
+        console.log("Selected time range: ", args.start, " - ", args.end);
+
+        const start = args.start;
+        const end = args.end;
+        const id = DayPilot.guid();
+        const text = modal.result.taskName;
+
         dp.events.add({
-          start: args.start,
-          end: args.end,
-          id: DayPilot.guid(),
-          text: modal.result,
+          start,
+          end,
+          id,
+          text,
         });
       },
       eventDeleteHandling: "Update",
@@ -58,6 +83,22 @@ class Calendar extends Component {
       },
     };
   }
+
+  handleAddTask = (task) => {
+    const dp = this.calendar;
+    const { text, start, end } = task;
+    const id = DayPilot.guid();
+    const newTask = {
+      start: new Date(start).toISOString(),
+      end: new Date(end).toISOString(),
+      id,
+      text: text
+    };
+    dp.events.add(newTask);
+    console.log("New task added: ", newTask);
+    console.log(dp.events);
+    this.setState({ isModalOpen: false });
+  };
 
   get calendar() {
     return this.calendarRef.current.control;
@@ -79,66 +120,6 @@ class Calendar extends Component {
         length_of_work: 10,
         category: "Homework",
         priority: "high",
-      },
-      {
-        id: 2,
-        start: "2023-03-07T12:00:00",
-        end: "2023-03-07T15:00:00",
-        text: "ECSE 427 HW",
-        description: "Project 1",
-        user_email: "betty@mail.com",
-        work_done: 5,
-        length_of_work: 10,
-        category: "Homework",
-        priority: "low",
-      },
-      {
-        id: 3,
-        start: "2023-03-08T15:00:00",
-        end: "2023-03-08T18:00:00",
-        text: "ECSE 429 HW",
-        description: "Deliverable 1",
-        user_email: "juf@mail.com",
-        work_done: 8,
-        length_of_work: 15,
-        category: "Homework",
-        priority: "high",
-      },
-      {
-        id: 4,
-        start: "2023-03-09T10:00:00",
-        end: "2023-03-09T12:00:00",
-        text: "ECSE 321 HW",
-        description: "Deliverable 2",
-        user_email: "matt@mail.com",
-        work_done: 6,
-        length_of_work: 9,
-        category: "Homework",
-        priority: "mid",
-      },
-      {
-        id: 5,
-        start: "2023-03-09T12:00:00",
-        end: "2023-03-09T15:00:00",
-        text: "ECSE 223 HW",
-        description: "Assignment 1",
-        user_email: "reg@mail.com",
-        work_done: 2,
-        length_of_work: 10,
-        category: "Homework",
-        priority: "high",
-      },
-      {
-        id: 6,
-        start: "2023-03-10T10:00:00",
-        end: "2023-03-10T12:00:00",
-        text: "ECSE 316 HW",
-        description: "Assignment 1",
-        user_email: "matt@mail.com",
-        work_done: 1,
-        length_of_work: 7,
-        category: "Homework",
-        priority: "low",
       },
     ];
 
@@ -166,6 +147,7 @@ class Calendar extends Component {
         </div>
         <div style={styles.main}>
           <DayPilotCalendar {...this.state} ref={this.calendarRef} />
+          <AddTask onSubmit={this.handleAddTask} />
         </div>
       </div>
     );
