@@ -1,0 +1,73 @@
+.image{
+    object-fit: fill;
+    width: 60vw !important;
+    margin: 0;
+    padding: 0;
+    justify-content: left;
+    left: 0;
+    height: 100vh !important;
+}
+.titleFont{
+    text-align: left;
+    color: var(--navy-blue);
+    font-weight: bold;
+    font-size: 3.5rem;
+}
+.formatTitle{
+    margin-top: 100px;
+    margin-bottom: 30px;
+}
+.bg{
+    background-color: var(--light-gray);
+    height: 100vh;
+}
+.circle{
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background-color: var(--navy-blue);
+}
+.logo{
+    align-items: center;
+    justify-content: center; 
+}
+.button{
+    margin-top: 15px;
+    margin-left: 15px;
+    border-radius: 15px;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--navy-blue);
+    color: white;
+    font-weight: bold;
+    border: 0;
+    transition: 0.3s;
+}
+.button:hover{
+    color: var(--navy-blue);
+    background-color: var(--light-blue);
+}
+.account{
+    bottom: 30px;
+    position: absolute;
+    display: block;
+    right: 50px;
+    color: var(--navy-blue);
+}
+.link{
+    color: var(--navy-blue);
+}
+.inputbox{
+    border: 1px solid var(--navy-blue);
+}
+.login{
+    bottom: 30px;
+    position: absolute;
+    right: 45vw;
+    color: var(--navy-blue);
+}
+
