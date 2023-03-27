@@ -12,7 +12,6 @@ function App() {
   //notes is a list of note components
   return (
     <div>
-      <Login />
       <TaskList />
     </div>
   );
